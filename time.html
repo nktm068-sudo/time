@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Голосовой помощник времени</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #timeDisplay {
+            font-size: 2em;
+            margin: 20px 0;
+            color: #333;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Голосовой помощник времени</h1>
+        <div id="timeDisplay">--:--:--</div>
+        <button onclick="speakTime()">
+            🗣️ Сказать текущее время
+        </button>
+    </div>
+
+    <script>
+        // Функция для получения текущего времени в формате ЧЧ:ММ:СС
+        function getCurrentTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+           
+            return `${hours}:${minutes}`;
+        }
+
+        // Функция для обновления отображения времени на экране
+        function updateTimeDisplay() {
+            document.getElementById('timeDisplay').textContent = getCurrentTime();
+        }
+
+        // Функция для озвучивания времени
+        function speakTime() {
+            const timeString = getCurrentTime();
+            const utterance = new SpeechSynthesisUtterance();
+
+            // Форматируем время для более естественного звучания
+            const [hours, minutes] = timeString.split(':');
+            let speechText = `Сейчас ${hours} часов, ${minutes} минут`;
+
+            utterance.text = speechText;
+            utterance.rate = 1.0;  // Скорость речи (нормальная)
+            utterance.pitch = 1.0; // Тон голоса
+            utterance.volume = 1.0; // Громкость
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Обновляем отображение времени каждую секунду
+        setInterval(updateTimeDisplay, 1000);
+
+        // Инициализируем отображение времени при загрузке страницы
+        window.addEventListener('load', updateTimeDisplay);
+    </script>
+</body>
+</html>
